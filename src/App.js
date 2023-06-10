@@ -135,9 +135,9 @@ const App = () => {
   const [nextKey, setNextKey] = useState('');
   const [total,setTotal] = useState(0); 
   const [correct,setCorrect] = useState(0);
-  const [timer, setTimer] = useState(5 * 60); 
+  const [timer, setTimer] = useState(5 * 60 ); 
   const [isActive, setIsActive] = useState(false);
-  
+  const [textArea,setTextArea] = useState(true);
 
   
   useEffect(() => {
@@ -145,7 +145,9 @@ const App = () => {
     if (isActive) {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
-          if(prevTimer === 1) {setIsActive(false); clearInterval(interval)}
+          if(prevTimer === 1) {setText("Time up!");
+          setTextArea(false);
+          setIsActive(false); clearInterval(interval)}
           return prevTimer - 1;
         });
       }, 1000);
@@ -158,12 +160,15 @@ const App = () => {
   }, [isActive, timer]);
 
   const handleStart = () => {
+    handleReset();
     setIsActive(true);
+    setTextArea(true);
   };
 
   const handleReset = () => {
     setTimer(5 * 60);
     setIsActive(false);
+    setTextArea(true);
   };
 
   const formatTime = (time) => {
@@ -176,6 +181,8 @@ const App = () => {
   };
 
   const { minutes, seconds } = formatTime(timer);
+  
+  
 
   useEffect(() => {
     setNextKey(getRandomKey());
@@ -190,10 +197,14 @@ const App = () => {
         setCorrect(correct + 1);
       }
       setTotal(total + 1);
-      setText((prevText) => prevText + key);
+      
       setNextKey(getRandomKey());
     }
   };
+
+  const resetText = () =>{
+    setText('');
+  }
 
   const getRandomKey = () => {
     const keys = 'asdfjkl'.split('');
@@ -201,7 +212,7 @@ const App = () => {
     return keys[randomIndex];
   };
 
-  
+
   return (
     <Container>
       <Navbar>
@@ -209,13 +220,13 @@ const App = () => {
         <Img src="favicon_io (2)\android-chrome-512x512.png"></Img>
         <List>
           <ListItem onClick={handleStart} disabled={setIsActive} >Start Practice</ListItem>
-          <ListItem onClick={()=>{handleReset()}}>Reset Text</ListItem>
+          <ListItem onClick={resetText}>Reset Text</ListItem>
           <ListItem onClick={handleReset}>Reset Timer</ListItem>
         </List>
       </Navbar>
       <TimerContainer>
         <InnerContainer>
-            {(minutes!=='00' || seconds !=='00')? `${minutes} : ${seconds}` : 'Time Over!'}
+            {(minutes!=='00' || seconds !=='00')?`${minutes} : ${seconds}` : 'Time Over!'}
         </InnerContainer>
       </TimerContainer>
 
@@ -236,6 +247,8 @@ const App = () => {
       <Lower>
         <TextArea value={text}
         onKeyDown={handleKeyDown}
+        onChange={(e)=>setText(e.target.value)}
+        disabled={!textArea}
         placeholder="Start typing...">
         </TextArea>
       </Lower>
