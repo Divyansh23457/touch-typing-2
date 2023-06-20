@@ -207,7 +207,7 @@ const App = () => {
   }
 
   const getRandomKey = () => {
-    const keys = 'asdfjkl'.split('');
+    const keys = 'abcdefghijklmnopqrstuvwxyz'.split('');
     const randomIndex = Math.floor(Math.random() * keys.length);
     return keys[randomIndex];
   };
